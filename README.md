@@ -26,7 +26,7 @@ Built for and running on **[When is Force Wipe Rust](https://whenisforcewiperust
 
 ## Installation
 
-1. Download the latest `featured-stream-slot.zip` from the [Releases](https://github.com/christianc24/featured-stream-slot/releases) page.
+1. Download the plugin: [featured-stream-slot (zip)](https://github.com/christianc24/featured-stream-slot/archive/refs/heads/main.zip).
 2. In WordPress go to **Plugins → Add New Plugin → Upload Plugin**, choose the zip and activate it.
 3. Open **Featured Stream** in the admin menu, paste your stream link and save.
 
