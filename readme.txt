@@ -14,7 +14,7 @@ A floating, draggable, resizable live stream player for Twitch, YouTube, Kick an
 
 Featured Stream Slot pins a live stream to the corner of every page of your site. Paste a Twitch, YouTube, Kick or Vimeo link and visitors get a small floating player that autoplays muted, can be dragged, resized or closed, and shows your own message when the stream is offline.
 
-Built for and running on [When is Force Wipe Rust](https://whenisforcewiperust.com).
+Created for a tech and gaming website.
 
 * Twitch channels, videos and clips, YouTube videos, live links and playlists, Kick channels, Vimeo videos, or any HTTPS embed URL.
 * Fast muted autoplay: the iframe is written at the top of the page with preconnect hints.
