@@ -80,4 +80,4 @@ Issues and pull requests are welcome. Please keep the plugin dependency-free and
 
 [GPL-2.0-or-later](LICENSE), like WordPress itself.
 
-Made by [christianc24](https://github.com/christianc24) for [whenisforcewiperust.com](https://whenisforcewiperust.com).
+Made by [christianc24](https://github.com/christianc24).
