@@ -1,0 +1,209 @@
+/*
+ * Featured Stream Slot player.
+ * Twitch refuses to autoplay a player that is shrunk with a CSS transform, faded,
+ * or has anything drawn over it. So the window is a column: a slim toolbar strip,
+ * then the video at its real size with nothing on top of it. (The zoom and
+ * min-height variables let a 400x300 player be shown zoomed down and cropped if
+ * Twitch ever enforces its documented 400x300 floor; both are off by default.)
+ */
+.ssp-player {
+	display: block;
+	margin: 0;
+	padding: 0;
+	pointer-events: auto;
+	position: relative;
+	z-index: 99990;
+}
+.ssp-player.ssp-floating {
+	bottom: var(--ssp-bottom, 20px);
+	position: fixed;
+	right: var(--ssp-side, 20px);
+}
+.ssp-player[hidden] { display: none; }
+/* Step aside while the Kadence theme's off-canvas mobile menu is open. */
+body.showing-popup-drawer-from-left .ssp-player,
+body.showing-popup-drawer-from-right .ssp-player { visibility: hidden; }
+.ssp-player .screen-reader-text {
+	border: 0;
+	clip: rect(1px, 1px, 1px, 1px);
+	clip-path: inset(50%);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	width: 1px;
+	word-wrap: normal !important;
+}
+.ssp-window {
+	background: #030712;
+	/* Border and corners are divided by the zoom so they stay the set size on screen. */
+	border: calc(var(--ssp-border-width, 3px) / var(--ssp-zoom, 1)) var(--ssp-border-style, solid) var(--ssp-border, #ef4444);
+	border-radius: calc(var(--ssp-radius, 12px) / var(--ssp-zoom, 1));
+	box-shadow: 0 18px 50px rgba(0, 0, 0, .42);
+	box-sizing: content-box;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	width: var(--ssp-inner-width, 400px);
+	zoom: var(--ssp-zoom, 1);
+}
+
+/* Toolbar strip: inside the window, above the video, never over it. */
+.ssp-toolbar {
+	align-items: center;
+	background: #0b1020;
+	box-sizing: border-box;
+	display: flex;
+	flex: 0 0 auto;
+	gap: 3px;
+	height: 24px;
+	padding: 0 2px;
+	position: relative;
+	width: 100%;
+}
+.ssp-drag-zone {
+	align-self: stretch;
+	cursor: move;
+	flex: 1 1 auto;
+	position: relative;
+	touch-action: none;
+}
+.ssp-grip {
+	border-top: 2px dotted rgba(255, 255, 255, .7);
+	border-bottom: 2px dotted rgba(255, 255, 255, .7);
+	height: 6px;
+	left: 50%;
+	position: absolute;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	width: 26px;
+}
+.ssp-btn {
+	align-items: center;
+	appearance: none;
+	background: rgba(255, 255, 255, .08);
+	border: 0;
+	border-radius: 50%;
+	box-shadow: none;
+	color: #fff;
+	cursor: pointer;
+	display: flex;
+	flex: 0 0 auto;
+	font: 500 17px/1 system-ui, sans-serif;
+	height: 22px;
+	justify-content: center;
+	letter-spacing: 0;
+	line-height: 1;
+	margin: 0;
+	min-height: 0;
+	min-width: 0;
+	padding: 0;
+	position: relative;
+	text-transform: none;
+	transition: background-color .15s ease;
+	width: 22px;
+}
+.ssp-reset { font-size: 14px; }
+.ssp-btn:hover, .ssp-btn:focus-visible { background: #374151; box-shadow: none; color: #fff; }
+.ssp-close:hover, .ssp-close:focus-visible { background: #dc2626; }
+
+/* Resize grip, top-left of the toolbar: drag up/left to grow, the bottom-right corner stays put. */
+.ssp-resize {
+	cursor: nwse-resize;
+	flex: 0 0 auto;
+	height: 22px;
+	position: relative;
+	touch-action: none;
+	width: 22px;
+}
+.ssp-resize::after {
+	border-left: 3px solid rgba(255, 255, 255, .85);
+	border-top: 3px solid rgba(255, 255, 255, .85);
+	content: "";
+	height: 8px;
+	left: 5px;
+	position: absolute;
+	top: 5px;
+	width: 8px;
+}
+.ssp-resize:hover::after { border-color: #fff; }
+
+/* Media area: a 16:9 window. The Twitch iframe inside is at least 300px tall,
+   centred, so its letterbox bars fall outside the window and are clipped. */
+.ssp-media {
+	aspect-ratio: 16 / 9;
+	background: #000;
+	flex: 0 0 auto;
+	overflow: hidden;
+	pointer-events: auto;
+	position: relative;
+	width: 100%;
+}
+.ssp-media iframe {
+	background: #000;
+	border: 0;
+	display: block;
+	height: max(100%, var(--ssp-min-height, 0px));
+	left: 0;
+	max-width: none;
+	position: absolute;
+	top: min(0px, calc((100% - var(--ssp-min-height, 0px)) / 2));
+	width: 100%;
+}
+.ssp-player.ssp-is-offline .ssp-media iframe,
+.ssp-player.ssp-stream-offline .ssp-media iframe { visibility: hidden; }
+.ssp-offline {
+	align-items: center;
+	background: #111318;
+	box-sizing: border-box;
+	color: #fff;
+	display: flex;
+	height: 100%;
+	inset: 0;
+	justify-content: center;
+	padding: 22px;
+	position: absolute;
+	text-align: center;
+	width: 100%;
+	z-index: 2;
+}
+.ssp-offline[hidden] { display: none; }
+.ssp-offline p {
+	color: #f3f4f6;
+	font: 600 clamp(14px, 1.1vw + 10px, 19px)/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+	margin: 0;
+	max-width: 100%;
+	overflow-wrap: anywhere;
+}
+
+.ssp-player.ssp-is-dragging,
+.ssp-player.ssp-is-resizing {
+	transition: none;
+	user-select: none;
+	will-change: left, top;
+}
+.ssp-player.ssp-is-dragging iframe,
+.ssp-player.ssp-is-resizing iframe { pointer-events: none; }
+
+@media (max-width: 767px) {
+	.ssp-player.ssp-floating {
+		bottom: var(--ssp-bottom, 20px);
+		left: 50%;
+		right: auto;
+		top: auto;
+		transform: translateX(-50%);
+	}
+	.ssp-window {
+		width: min(var(--ssp-mobile-width, 92vw), calc(100vw - 16px));
+		zoom: 1;
+	}
+	/* Twitch never autoplays on phones, so no minimum size: plain 16:9. */
+	.ssp-player .ssp-media iframe { height: 100%; top: 0; }
+	.ssp-resize { display: none; }
+	.ssp-drag-zone { cursor: default; pointer-events: none; touch-action: auto; }
+	.ssp-grip { display: none; }
+}
+@media (prefers-reduced-motion: no-preference) {
+	.ssp-window { transition: box-shadow .18s ease; }
+}
