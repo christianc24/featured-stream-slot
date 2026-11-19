@@ -2,6 +2,8 @@
 
 A WordPress plugin that pins a live stream to the corner of every page. Paste a Twitch, YouTube, Kick or Vimeo link and your visitors get a small floating player that autoplays muted, can be dragged, resized or closed, and shows your own message when the stream is offline.
 
+I created it for my own website in the tech and gaming niche.
+
 Built for and running on **[When is Force Wipe Rust](https://whenisforcewiperust.com)**, the Rust force wipe countdown and tools site, where it shows a featured streamer to every visitor.
 
 ![Floating player on a WordPress site](.github/screenshots/player-desktop.png)
